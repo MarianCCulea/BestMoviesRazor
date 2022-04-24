@@ -1,0 +1,170 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.JSInterop;
+
+
+namespace WebApplication1.Pages
+{
+    public class IndexModel : PageModel
+    {
+        [BindProperty]
+        public string CourtID { get; set; }
+
+        private readonly ILogger<IndexModel> _logger;
+
+        public List<Jqueri> JqueryList = new List<Jqueri>(); 
+        private Dictionary<string, string> dictionary = new Dictionary<string, string>();
+
+        public IndexModel(ILogger<IndexModel> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnGet()
+        {
+            Console.WriteLine("ONGETNOW");
+            //user will have the list of courts they have permission to access?
+            //Hard coded for now
+            JqueryList = new List<Jqueri>()
+            {
+               new Jqueri
+               {
+                   Name = "emailaddress",
+                   Name2 = "Email Adress",
+                   ElementCode =
+                "<input id=\"textinput\" name=\"emailaddress\" type=\"email\" placeholder=\"placeholder\" class=\"form-control input-md\">" +
+                "<span class=\"help-block\">help</span>"
+               },
+               new Jqueri
+               {
+                   Name = "name",
+                   Name2 = "Name",
+                   ElementCode =
+                "<input id=\"textinput\" name=\"name\" type=\"email\" placeholder=\"placeholder\" class=\"form-control input-md\">" +
+                "<span class=\"help-block\">help</span>"
+               },
+               new Jqueri
+               {
+                   Name = "passwordinput",
+                   Name2 = "Password",
+                   ElementCode =
+                "<input id=\"textinput\" name=\"passwordinput\" type=\"password\" placeholder=\"placeholder\" class=\"form-control input-md\">" +
+                "<span class=\"help-block\">help</span>"
+               },
+               new Jqueri
+               {
+                   Name = "selectbasic",
+                   Name2 = "Select",
+                   ElementCode =
+                   "<select id = \"selectbasic\" name=\"selectbasic\" class=\"form-control\">" +
+                   "<option value = \"1\" > Option one</option>" +
+                   "<option value = \"2\" > Option two</option>" +
+                   "</select>"
+               },
+               new Jqueri
+               {
+                   Name = "checkboxes",
+                   Name2 = "Check Box",
+                   ElementCode =
+                   "<div class=\"checkbox\">" +
+                   "<label for=\"checkboxes-0\">" +
+                   "<input type = \"checkbox\" name=\"checkboxes\" id=\"checkboxes-0\" value=\"1\">" +
+                   "Option one" +
+                   "</label>" +
+                   "</div>" +
+                   "<div class=\"checkbox\">" +
+                   "<label for=\"checkboxes-1\">" +
+                   "<input type = \"checkbox\" name=\"checkboxes\" id=\"checkboxes-1\" value=\"2\">" +
+                   "Option two" +
+                   "</label>" +
+                   "</div>"
+               }
+            };
+            CourtID = "<div class=\"form-group\"><label class=\"col-md-4 control-label\" for=\"textinput\">Text Input</label>  <div class=\"col-md-4\"><input id=\"textinput\" name=\"textinput\" type=\"text\" placeholder=\"placeholder\" class=\"form -control input-md\"><span class=\"help-block\">help</span></div></div>";
+            CourtID = "<div class=\"form-group\">" +
+                "<label class=\"col-md-4 control-label\" for=\"textinput\">Text Input</label>  " +
+                "<div class=\"col-md-4\">" +
+                "<input id=\"textinput\" name=\"emailaddress\" type=\"email\" placeholder=\"placeholder\" class=\"form-control input-md\">" +
+                "<span class=\"help-block\">help</span>" +
+                "</div>" +
+                "</div>";
+               Console.WriteLine(CourtID);
+            ViewData["CourtID"] = CourtID;
+        }
+
+        public void POSTFORM()
+        {
+            string companyname = Request.Form["companyname"];
+        }
+
+        public void OnPost()
+        {
+            foreach(var item in JqueryList)
+            {
+                var fieldName = Request.Form[item.Name];
+                dictionary[item.Name] = fieldName;
+            }
+
+        }
+
+        public class Jqueri
+        {
+            public string Name { get; set; }
+            public string Name2 { get; set; }
+
+            public string ElementCode { get; set; }
+        }
+    }
+}
+/////////
+
+
+
+
+
+
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<form class="form-horizontal" method="post">
+<fieldset>
+        @foreach(var item in @Model.JqueryList)
+        {
+            <div class="form-group">
+                 <label class="col-md-4 control-label" for="textinput">@item.Name2</label> 
+                 <div class="col-md-4">
+
+            @Html.Raw(@item.ElementCode)
+
+            </div>
+            </div>
+
+        }
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
+  <div class="col-md-4">
+    <button type="submit" class="btn btn-primary">Button</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+
+
+<script>
+
+    var str=@Html.Raw(@ViewData["CourtID"]);
+    alert(str);
+    document.getElementById("MyForm").innerHTML=@Html.Raw(@Model.CourtID);
+</script>
