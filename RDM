@@ -168,3 +168,183 @@ namespace WebApplication1.Pages
     alert(str);
     document.getElementById("MyForm").innerHTML=@Html.Raw(@Model.CourtID);
 </script>
+
+///////////////////////////////////////////////////////////
+
+
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<style>
+.form-rendered #build-wrap {
+  display: none;
+}
+
+.render-wrap {
+  display: none;
+}
+
+.form-rendered .render-wrap {
+  display: block;
+}
+
+#edit-form {
+  display: none;
+  float: right;
+}
+
+.form-rendered #edit-form {
+  display: block;
+}</style>
+
+<div class="setDataWrap">
+  <button id="getXML" type="button">Get XML Data</button>
+  <button id="getJSON" type="button">Get JSON Data</button>
+  <button id="getJS" type="button">Get JS Data</button>
+</div>
+<select name="formTemplates" id="formTemplates" class="form-control">
+  <option value="user">User Form</option>
+  <option value="issue">Submit Issue Form</option>
+</select>
+
+<div id="build-wrap"></div>
+<div class="render-wrap"></div>
+<button id="edit-form">Edit Form</button>
+
+
+
+<script>
+    
+    jQuery(function($) {
+
+        var fbTemplate = document.getElementById("build-wrap");
+  var options = {
+    onSave: function (evt, formData) {
+      console.log("formbuilder saved");
+      toggleEdit(false);
+
+      $('.render-wrap').formRender({ formData });
+    }
+  };
+
+  const templateSelect = document.getElementById("formTemplates");
+  const formBuilder = $(fbTemplate).formBuilder(options);
+
+
+
+  const templates = {
+    user: [
+      {
+        type: "text",
+        label: "Name:",
+        subtype: "text",
+        className: "form-control",
+        name: "text-1475765723950"
+      },
+      {
+        type: "text",
+        subtype: "email",
+        label: "Email:",
+        className: "form-control",
+        name: "text-1475765724095"
+      },
+      {
+        type: "text",
+        subtype: "tel",
+        label: "Phone:",
+        className: "form-control",
+        name: "text-1475765724231"
+      },
+      {
+        type: "textarea",
+        label: "Short Bio:",
+        className: "form-control",
+        name: "textarea-1475765724583"
+      }
+    ],issue: [
+      {
+        type: "text",
+        label: "Issue:",
+        subtype: "text",
+        className: "form-control",
+        name: "text-1475766502491"
+      },
+      {
+        type: "text",
+        label: "Platform:",
+        subtype: "text",
+        className: "form-control",
+        name: "text-1475766502680"
+      },
+      {
+        type: "textarea",
+        label: "Steps to Reproduce:",
+        className: "form-control",
+        name: "textarea-1475766579522"
+      },
+      {
+        type: "file",
+        label: "Screenshot:",
+        className: "form-control",
+        name: "file-1475766594420"
+      },
+      {
+        type: "select",
+        label: "Assign Developer:",
+        className: "form-control",
+        name: "select-1475766623703",
+        multiple: true,
+        values: [
+          {
+            label: "Adam",
+            value: "option-1",
+            selected: true
+          },
+          {
+            label: "Adrian",
+            value: "option-2",
+            selected: false
+          },
+          {
+            label: "Alexa",
+            value: "option-3",
+            selected: false
+          },
+          {
+            label: "Amy",
+            value: "",
+            selected: false
+          }
+        ]
+      }
+    ]
+  };
+
+ templateSelect.addEventListener("change", function(e) {
+    formBuilder.actions.setData(templates[e.target.value]);
+  });
+
+
+  document.getElementById('getXML').addEventListener('click', function() {
+    alert(formBuilder.actions.getData('xml'));
+  });
+  document.getElementById('getJSON').addEventListener('click', function() {
+    alert(formBuilder.actions.getData('json'));
+  });
+  document.getElementById('getJS').addEventListener('click', function() {
+    alert('check console');
+    console.log(formBuilder.actions.getData());
+  });
+});
+
+function toggleEdit(editing) {
+  document.body.classList.toggle("form-rendered", !editing);
+}
+
+document.getElementById("edit-form").onclick = function () {
+  toggleEdit(true);
+};
+
+</script>
